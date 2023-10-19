@@ -13,6 +13,8 @@ Dependencies:
  - arduino-iot-client
  - requests-authlib
  - adafruit-io
+ - typing-extensions < Python 3.10
+ - frozendict
 """
 import logging
 
