@@ -1,0 +1,14 @@
+# =========================================================
+#                S E T T I N G S . T O M L
+# ---------------------------------------------------------
+# Please see README.md for instructions on how to use 
+# these settings and their effects
+# =========================================================
+
+# -- Adafruit IO ------------------------------------------
+AIO_ID = "<ADAFRUIT IO USERNAME>"
+AIO_KEY = "<ADAFRUIT IO KEY>"
+
+# -- Arduino Cloud ----------------------------------------
+ARD_ID = "<ARDUINO CLOUD ID>"
+ARD_KEY = "<ARDUINO CLOUD KEY>"
