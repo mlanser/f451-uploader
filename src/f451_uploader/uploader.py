@@ -16,6 +16,7 @@ Dependencies:
  - typing-extensions < Python 3.10
  - frozendict
 """
+
 import logging
 
 from random import randint
@@ -34,6 +35,26 @@ from iot_api_client.configuration import Configuration as ardConfig
 #                     M A I N   C L A S S
 # =========================================================
 class Uploader:
+    """Main Uploader class for manaing IoT data uploads.
+
+    This class encapsulates both Adafruit IO and Arduino Cloud clients
+    and makes it easier to upload data to and/or receive data from either
+    cloud service.
+
+    Attributes:
+        aio_is_active:
+            boolean flag indicating that Adafruit IO clients are initialized
+        ard_is_active:
+            boolean flag indicating that Arduino Cloud client is initialized
+
+    Methods:
+        aio_create_feed:
+            method to create a new Adafruit IO feed
+        aio_feed_info:
+            method to get info/metadata for an Adafruit IO feed
+        aio_delete_feed:
+            method to delete an existing Adafruit IO feed
+    """
     def __init__(self, aioID="", aioKey="", ardID="", ardKey="", logger=None):
         """Initialize Uploader
 
@@ -50,11 +71,22 @@ class Uploader:
                 f451 Labs Logger object - if available, then this object 
                 can log errors as needed    
         """
-        self._aioREST = aioREST(aioID, aioKey)
-        self._aioMQTT = None
+        self.aio_is_active, self._aioREST, self._aioMQTT = self._init_aio(aioID, aioKey)
         self._ardREST = None
         self._LOG = logger
         
+    def _init_aio_rest(self, aioID, aioKey):
+        """Initialize Adafruit IO REST and MQTT clients."""
+        flg = False
+        aRC = aMC = None
+
+        if aioID and aioKey:
+            aRC = self.aioREST(aioID, aioKey)
+            aRC = self.aioREST(aioID, aioKey)
+            flg = True
+
+        return flg, aRC, aMC    
+
     def aio_create_feed(self, feedName):
         """Create Adafruit IO feed
 
@@ -63,19 +95,26 @@ class Uploader:
                 'str' name of new Adafruit IO feed
         Returns:
             Adafruit feed info
+
+        Raises:
+            RequestError
         """
-        feed = aioFeed(name=feedName)
-        try:
-            info = self._aioREST.create_feed(feed)
+        if self.aio_is_active:
+            feed = aioFeed(name=feedName)
+            try:
+                info = self._aioREST.create_feed(feed)
 
-        except RequestError as e:
-            if self._LOG:
-                self._LOG.log(logging.ERROR, f"Failed to create feed - ADAFRUIT REQUEST ERROR: {e}")
-            raise
+            except RequestError as e:
+                if self._LOG:
+                    self._LOG.log(logging.ERROR, f"Failed to create feed - ADAFRUIT REQUEST ERROR: {e}")
+                raise
         
-        return info
+            return info
+        
+        else:
+            raise RequestError
 
-    def aio_get_feed_info(self, feedKey):
+    def aio_feed_info(self, feedKey):
         """Get Adafruit IO feed info
 
         Args:
@@ -84,15 +123,19 @@ class Uploader:
         Returns:
             Adafruit feed info
         """
-        try:
-            info = self._aioREST.feeds(feedKey)
+        if self.aio_is_active:
+            try:
+                info = self._aioREST.feeds(feedKey)
 
-        except RequestError as e:
-            if self._LOG:
-                self._LOG.log(logging.ERROR, f"Failed to get feed info - ADAFRUIT REQUEST ERROR: {e}")
-            raise
+            except RequestError as e:
+                if self._LOG:
+                    self._LOG.log(logging.ERROR, f"Failed to get feed info - ADAFRUIT REQUEST ERROR: {e}")
+                raise
+            
+            return info
         
-        return info
+        else:
+            raise RequestError
 
     def aio_delete_feed(self, feedKey):
         """Delete Adafruit IO feed
@@ -103,15 +146,19 @@ class Uploader:
         Returns:
             Adafruit feed info
         """
-        try:
-            info = self._aioREST.feeds(feedKey)
+        if self.aio_is_active:
+            try:
+                info = self._aioREST.feeds(feedKey)
 
-        except RequestError as e:
-            if self._LOG:
-                self._LOG.log(logging.ERROR, f"Failed to get feed info - ADAFRUIT REQUEST ERROR: {e}")
-            raise
+            except RequestError as e:
+                if self._LOG:
+                    self._LOG.log(logging.ERROR, f"Failed to get feed info - ADAFRUIT REQUEST ERROR: {e}")
+                raise
+            
+            return info
         
-        return info
+        else:
+            raise RequestError
 
     async def aio_send_data(self, feedKey, dataPt):
         """Send data value to Adafruit IO feed
@@ -129,14 +176,19 @@ class Uploader:
             ThrottlingError:
                 When exceeding Adafruit IO rate limit
         """
-        try:
-            self._aioREST.send_data(feedKey, dataPt)
-        except RequestError as e:
-            if self._LOG:
-                self._LOG.log(logging.ERROR, f"Upload failed for {feedKey} - REQUEST ERROR: {e}")
-            raise
+        if self.aio_is_active:
+            try:
+                self._aioREST.send_data(feedKey, dataPt)
+            except RequestError as e:
+                if self._LOG:
+                    self._LOG.log(logging.ERROR, f"Upload failed for {feedKey} - REQUEST ERROR: {e}")
+                raise
+            
+            except ThrottlingError as e:
+                if self._LOG:
+                    self._LOG.log(logging.ERROR, f"Upload failed for {feedKey} - THROTTLING ERROR: {e}")
+                raise
         
-        except ThrottlingError as e:
-            if self._LOG:
-                self._LOG.log(logging.ERROR, f"Upload failed for {feedKey} - THROTTLING ERROR: {e}")
-            raise
+        else:
+            raise RequestError
+
