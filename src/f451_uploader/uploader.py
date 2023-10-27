@@ -86,8 +86,10 @@ class Uploader:
         """Initialize Uploader
 
         Args:
+            args:
+                User can provide single 'dict' with settings
             kwargs:
-                Core settings as key-value pairs in 'dict'
+                User can provide individual settings as key-value pairs
         """
 
         # We combine 'args' and 'kwargs' to allow users to provide the entire 
