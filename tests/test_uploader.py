@@ -22,10 +22,13 @@ except ModuleNotFoundError:
 
 
 # =========================================================
-#          F I X T U R E S   A N D   H E L P E R S
+#              M I S C .   C O N S T A N T S
 # =========================================================
 KWD_TST_VAL = "TST_VAL"
 
+# =========================================================
+#          F I X T U R E S   A N D   H E L P E R S
+# =========================================================
 @pytest.fixture
 def valid_str():
     return "Hello world"

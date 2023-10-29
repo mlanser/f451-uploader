@@ -43,6 +43,7 @@ def main():
     iot = Uploader(config)
     feedName = 'TEST_FEED_' + str(time.time_ns())
 
+    print("\n===== [Demo of f451 Labs Uploader Module] =====")
     print(f"Creating new Adafruit IO feed: {feedName}")
     feed = iot.aio_create_feed(feedName)
 
@@ -59,6 +60,9 @@ def main():
     # we print out the whole structure.
     pretty = json.dumps(data._asdict(), indent=4, sort_keys=True)
     print(pretty)
+
+    print("=============== [End of Demo] =================\n")
+
 
 if __name__ == "__main__":
     main()
