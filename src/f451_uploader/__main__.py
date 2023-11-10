@@ -6,8 +6,6 @@ import asyncio
 from pathlib import Path
 from random import randint
 import json
-from collections import namedtuple
-import pprint
 
 from f451_uploader.uploader import Uploader
 
@@ -15,15 +13,6 @@ try:
     import tomllib
 except ModuleNotFoundError:
     import tomli as tomllib
-
-
-# =========================================================
-#          G L O B A L S   A N D   H E L P E R S
-# =========================================================
-KWD_AIO_ID = "AIO_ID"
-KWD_AIO_KEY = "AIO_KEY"
-KWD_ARD_ID = "ARD_ID"
-KWD_ARD_KEY = "ARD_KEY"
 
 
 # =========================================================
@@ -37,8 +26,8 @@ def main():
     try:
         with open(appDir.joinpath("settings.toml"), mode="rb") as fp:
             config = tomllib.load(fp)
-    except tomllib.TOMLDecodeError:
-        sys.exit("Invalid 'settings.toml' file")      
+    except (FileNotFoundError, tomllib.TOMLDecodeError):
+        sys.exit("ERROR: Missing or invalid 'settings.toml' file")      
 
     iot = Uploader(config)
     feedName = 'TEST_FEED_' + str(time.time_ns())

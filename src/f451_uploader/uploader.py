@@ -95,7 +95,7 @@ class Uploader:
         # We combine 'args' and 'kwargs' to allow users to provide the entire 
         # 'config' object and/or individual settings (which could override 
         # values in 'config').
-        settings = {**args[0], **kwargs} if args and type(args[0]) is dict else kwargs
+        settings = {**args[0], **kwargs} if args and isinstance(args[0], dict) else kwargs
 
         self.aio_is_active, self._aioREST, self._aioMQTT = self._init_aio(**settings)
         self.ard_is_active, self._ardREST = self._init_ard(**settings)

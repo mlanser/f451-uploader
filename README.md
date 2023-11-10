@@ -1,4 +1,4 @@
-# f451 Labs Uploader module
+# f451 Labs Uploader module v0.0.2
 
 ## Overview
 
@@ -6,14 +6,15 @@ The *f451 Labs Uploader* module encapsulates the *Adafruit IO* REST and MQTT cli
 
 ## Install
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Convallis a cras semper auctor neque vitae.
+This module is not (yet) available on PyPi. however, you can still use `pip` to install the module directly from Github (see below).
 
 ### Dependencies
 
 This module is dependent on the following libraries:
 
-- [logging](https://docs.python.org/3/howto/logging.html)
-- [pprint](https://docs.python.org/3/library/pprint.html)
+- [adafruit-io](https://adafruit-io-python-client.readthedocs.io/en/latest/index.html)
+- [arduino-iot-client](https://docs.arduino.cc/arduino-cloud/getting-started/arduino-iot-api#python)
+- [requests-oauthlib](https://pypi.org/project/requests-oauthlib/)
 
 ### Installing from Github using `pip`
 
@@ -33,12 +34,31 @@ $ pip install 'f451-uploader @ git+ssh://git@github.com:mlanser/f451-uploader.gi
 
 ## How to use
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Convallis a cras semper auctor neque vitae.
+Using the module is straightforward. Simply `import` it into your code and instantiate an `Uploader` object which you can then use throughout your code.
 
 ```Python
-# ??? ...
-uploader = Uploader()
+# Import f451 Labs Uploader
+from f451_uploader.uploader import Uploader
 
-# ... ???
-uploader = Uploader(....)
+# Initialize 'Uploader'
+myUploader = Uploader(
+    AIO_ID = "<ADAFRUIT IO USERNAME>", 
+    AIO_KEY = "<ADAFRUIT IO KEY>"
+)
+
+# Create an Adafruit IO feed
+feed = myUploader.aio_create_feed('my-new-feed')
+
+# Upload data to Adafruit IO feed
+asyncio.run(myUploader.aio_send_data(feed.key, randint(1, 100)))
+
+# Receiving latest data from Adafruit IO feed
+data = asyncio.run(myUploader.aio_receive_data(feed.key, True))
+
+# Adafruit IO returns data in form of 'namedtuple' and we can 
+# use the '_asdict()' method to convert it to regular 'dict'.
+# We then pass the 'dict' to 'json.dumps()' to prettify before 
+# we print out the whole structure.
+pretty = json.dumps(data._asdict(), indent=4, sort_keys=True)
+print(pretty)
 ```
