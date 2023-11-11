@@ -1,4 +1,4 @@
-# f451 Labs Uploader module v0.1.0
+# f451 Labs Uploader module v0.2.0
 
 ## Overview
 
