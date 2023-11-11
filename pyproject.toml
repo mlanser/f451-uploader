@@ -38,7 +38,7 @@ dev = [
 Homepage = "https://github.com/mlanser/f451-uploader"
 
 [project.scripts]
-realpython = "uploader.__main__:main"
+f451_uploader = "uploader.__main__:main"
 
 [tool.bumpver]
 current_version = "0.1.0"
