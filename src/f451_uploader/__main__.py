@@ -7,7 +7,7 @@ from pathlib import Path
 from random import randint
 import json
 
-from f451_uploader.uploader import Uploader
+from .uploader import Uploader
 
 try:
     import tomllib
@@ -19,15 +19,19 @@ except ModuleNotFoundError:
 #                    D E M O   A P P
 # =========================================================
 def main():
-    # Get app dir
-    appDir = Path(__file__).parent
-
-    # Initialize TOML parser and load 'settings.toml' file
+    # Initialize TOML parser and try to load 'settings.toml' file
     try:
-        with open(appDir.joinpath("settings.toml"), mode="rb") as fp:
+        with open(Path(__file__).parent.joinpath("settings.toml"), mode="rb") as fp:
             config = tomllib.load(fp)
     except (FileNotFoundError, tomllib.TOMLDecodeError):
-        sys.exit("ERROR: Missing or invalid 'settings.toml' file")      
+        config = {
+            "AIO_ID": None,         # Set your 'ADAFRUIT IO USERNAME'
+            "AIO_KEY": None,        # set your 'ADAFRUIT IO KEY'
+        }
+
+    # Check for creds
+    if not config.get("AIO_ID", None) or not config.get("AIO_KEY", None):
+        sys.exit("ERROR: Missing Adafruit IO credentials")      
 
     iot = Uploader(config)
     feedName = 'TEST_FEED_' + str(time.time_ns())
