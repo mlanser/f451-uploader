@@ -25,6 +25,7 @@ except ModuleNotFoundError:
 #              M I S C .   C O N S T A N T S
 # =========================================================
 KWD_TST_VAL = "TST_VAL"
+DEF_TST_VAL = "test1-2-3"
 
 # =========================================================
 #          F I X T U R E S   A N D   H E L P E R S
@@ -69,7 +70,7 @@ def test_dummy(valid_str):
 def test_config(config):
     setting = config[KWD_TST_VAL]
 
-    assert setting == "test1-2-3"
+    assert setting == DEF_TST_VAL
 
 
 def test_init_aio(config):
@@ -81,6 +82,9 @@ def test_init_aio(config):
 @pytest.mark.online
 @pytest.mark.adafruit
 def test_aio_create_and_delete_feed(uploader):
+    #
+    # NOTE: This test requires active Adafruit IO account.
+    #
     feedName = 'TEST-FEED-' + str(time.time_ns())
 
     feedInfo = uploader.aio_create_feed(feedName)
@@ -97,6 +101,9 @@ def test_aio_create_and_delete_feed(uploader):
 @pytest.mark.online
 @pytest.mark.adafruit
 def test_aio_send_and_delete_data(uploader):
+    #
+    # NOTE: This test requires active Adafruit IO account.
+    #
     feedName = 'TEST-FEED-' + str(time.time_ns())
     dataPt = randint(1, 100)
 
