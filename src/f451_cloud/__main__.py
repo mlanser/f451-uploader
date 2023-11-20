@@ -1,4 +1,4 @@
-"""Demo for using f451 Labs Uploader Module."""
+"""Demo for using f451 Labs Cloud Module."""
 
 import time
 import sys
@@ -7,7 +7,7 @@ from pathlib import Path
 from random import randint
 import json
 
-from .uploader import Uploader
+from .cloud import Cloud
 
 try:
     import tomllib
@@ -33,10 +33,10 @@ def main():
     if not config.get("AIO_ID", None) or not config.get("AIO_KEY", None):
         sys.exit("ERROR: Missing Adafruit IO credentials")      
 
-    iot = Uploader(config)
+    iot = Cloud(config)
     feedName = 'TEST_FEED_' + str(time.time_ns())
 
-    print("\n===== [Demo of f451 Labs Uploader Module] =====")
+    print("\n===== [Demo of f451 Labs Cloud Module] =====")
     print(f"Creating new Adafruit IO feed: {feedName}")
     feed = iot.aio_create_feed(feedName)
 

@@ -1,8 +1,8 @@
-# f451 Labs Uploader module v1.0.0
+# f451 Labs Cloud module v1.0.0
 
 ## Overview
 
-The *f451 Labs Uploader* module encapsulates the *Adafruit IO* REST and MQTT clients, as well as the *Arduino Cloud* client within a single class. Most *f451 Labs* projects upload to and/or receive data from one or both of these services, and the `Uploader` class simplifies these tasks by standardizing send and receive methods, and so on.
+The *f451 Labs Cloud* module encapsulates the *Adafruit IO* REST and MQTT clients, as well as the *Arduino Cloud* client within a single class. Most *f451 Labs* projects upload to and/or receive data from one or both of these services, and the `Cloud` class simplifies these tasks by standardizing send and receive methods, and so on.
 
 ## Install
 
@@ -23,37 +23,37 @@ You can use `pip install` to install this module directly from Github as follows
 Using HTTPS:
 
 ```bash
-$ pip install 'f451-uploader @ git+https://github.com/mlanser/f451-uploader.git'
+$ pip install 'f451-cloud @ git+https://github.com/mlanser/f451-cloud.git'
 ```
 
 Using SSH:
 
 ```bash
-$ pip install 'f451-uploader @ git+ssh://git@github.com:mlanser/f451-uploader.git'
+$ pip install 'f451-cloud @ git+ssh://git@github.com:mlanser/f451-cloud.git'
 ```
 
 ## How to use
 
-Using the module is straightforward. Simply `import` it into your code and instantiate an `Uploader` object which you can then use throughout your code.
+Using the module is straightforward. Simply `import` it into your code and instantiate an `Cloud` object which you can then use throughout your code.
 
 ```Python
-# Import f451 Labs Uploader
-from f451_uploader.uploader import Uploader
+# Import f451 Labs Cloud
+from f451_cloud.cloud import Cloud
 
-# Initialize 'Uploader'
-myUploader = Uploader(
+# Initialize 'Cloud'
+myCloud = Cloud(
     AIO_ID = "<ADAFRUIT IO USERNAME>", 
     AIO_KEY = "<ADAFRUIT IO KEY>"
 )
 
 # Create an Adafruit IO feed
-feed = myUploader.aio_create_feed('my-new-feed')
+feed = myCloud.aio_create_feed('my-new-feed')
 
 # Upload data to Adafruit IO feed
-asyncio.run(myUploader.aio_send_data(feed.key, randint(1, 100)))
+asyncio.run(myCloud.aio_send_data(feed.key, randint(1, 100)))
 
 # Receiving latest data from Adafruit IO feed
-data = asyncio.run(myUploader.aio_receive_data(feed.key, True))
+data = asyncio.run(myCloud.aio_receive_data(feed.key, True))
 
 # Adafruit IO returns data in form of 'namedtuple' and we can 
 # use the '_asdict()' method to convert it to regular 'dict'.
