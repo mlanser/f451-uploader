@@ -1,6 +1,6 @@
-"""f451 Labs Uploader module.
+"""f451 Labs Cloud module.
 
-The f451 Labs Uploader module encapsulates the Adafruit IO REST and MQTT client 
+The f451 Labs Cloud module encapsulates the Adafruit IO REST and MQTT client 
 classes, the Arduino IoT-API client class, and adds a few more features that are 
 commonly used in f451 Labs projects.
 
@@ -26,8 +26,8 @@ from iot_api_client.rest import ApiException as ardAPIError
 from iot_api_client.configuration import Configuration as ardConfig
 
 __all__ = [
-    "Uploader",
-    "UploaderError",    
+    "Cloud",
+    "CloudError",    
     "KWD_AIO_ID",
     "KWD_AIO_KEY",
     "KWD_ARD_ID",
@@ -47,7 +47,7 @@ KWD_ARD_KEY = "ARD_KEY"
 # =========================================================
 #                        H E L P E R S
 # =========================================================
-class UploaderError(Exception):
+class CloudError(Exception):
     """Custom exception class"""
     pass
 
@@ -55,8 +55,8 @@ class UploaderError(Exception):
 # =========================================================
 #                     M A I N   C L A S S
 # =========================================================
-class Uploader:
-    """Main Uploader class for managing IoT data uploads.
+class Cloud:
+    """Main Cloud class for managing IoT data uploads.
 
     This class encapsulates both Adafruit IO and Arduino Cloud clients
     and makes it easier to upload data to and/or receive data from either
@@ -72,9 +72,9 @@ class Uploader:
     settings which could override the values in the 'config' object.
 
     Example:
-        myUploader = Uploader(config)           # Use values from 'config' 
-        myUploader = Uploader(key=val)          # Use val
-        myUploader = Uploader(config, key=val)  # Use values from 'config' and also use 'val' 
+        myCloud = Cloud(config)           # Use values from 'config' 
+        myCloud = Cloud(key=val)          # Use val
+        myCloud = Cloud(config, key=val)  # Use values from 'config' and also use 'val' 
 
     Attributes:
         AIO_USERNAME:   Adafruit IO username
@@ -91,7 +91,7 @@ class Uploader:
         aio_receive_data:   Receive data from an existing Adafruit IO feed
     """
     def __init__(self, *args, **kwargs):
-        """Initialize Uploader
+        """Initialize Cloud
 
         Args:
             args:
@@ -150,7 +150,7 @@ class Uploader:
             Adafruit feed info
 
         Raises:
-            UploaderError:
+            CloudError:
                 When Adafruit IO client is not initiated
             RequestError:
                 When API request fails
@@ -164,12 +164,12 @@ class Uploader:
                 feedList = self._aioREST.feeds()
                 nameList = [feed.name for feed in feedList]
                 if feedName in nameList:
-                    raise UploaderError(f"Adafruit IO already has a feed named '{feedName}'")
+                    raise CloudError(f"Adafruit IO already has a feed named '{feedName}'")
                 
             return self._aioREST.create_feed(feed)
         
         else:
-            raise UploaderError("Adafruit IO client not initiated")
+            raise CloudError("Adafruit IO client not initiated")
 
     def aio_feed_list(self):
         """Get Adafruit IO feed info
@@ -178,7 +178,7 @@ class Uploader:
             List of feeds from Adafruit IO
 
         Raises:
-            UploaderError:
+            CloudError:
                 When Adafruit IO client is not initiated
             RequestError:
                 When API request fails
@@ -189,7 +189,7 @@ class Uploader:
             return self._aioREST.feeds()
         
         else:
-            raise UploaderError("Adafruit IO client not initiated")
+            raise CloudError("Adafruit IO client not initiated")
 
     def aio_feed_info(self, feedKey):
         """Get Adafruit IO feed info
@@ -201,7 +201,7 @@ class Uploader:
             Adafruit feed info
 
         Raises:
-            UploaderError:
+            CloudError:
                 When Adafruit IO client is not initiated
             RequestError:
                 When API request fails
@@ -212,7 +212,7 @@ class Uploader:
             return self._aioREST.feeds(feedKey)
         
         else:
-            raise UploaderError("Adafruit IO client not initiated")
+            raise CloudError("Adafruit IO client not initiated")
 
     def aio_delete_feed(self, feedKey):
         """Delete Adafruit IO feed
@@ -224,7 +224,7 @@ class Uploader:
             Adafruit feed info
 
         Raises:
-            UploaderError:
+            CloudError:
                 When Adafruit IO client is not initiated
             RequestError:
                 When API request fails
@@ -235,7 +235,7 @@ class Uploader:
             self._aioREST.delete_feed(feedKey)
 
         else:
-            raise UploaderError("Adafruit IO client not initiated")
+            raise CloudError("Adafruit IO client not initiated")
 
     async def aio_send_data(self, feedKey, dataPt):
         """Send data value to Adafruit IO feed
@@ -249,7 +249,7 @@ class Uploader:
             Adafruit feed info
 
         Raises:
-            UploaderError:
+            CloudError:
                 When Adafruit IO client is not initiated
             RequestError:
                 When API request fails
@@ -260,7 +260,7 @@ class Uploader:
             self._aioREST.send_data(feedKey, dataPt)
         
         else:
-            raise UploaderError("Adafruit IO client not initiated")
+            raise CloudError("Adafruit IO client not initiated")
 
     async def aio_receive_data(self, feedKey, raw=False):
         """Receive last data value from Adafruit IO feed
@@ -275,7 +275,7 @@ class Uploader:
             Adafruit feed info
 
         Raises:
-            UploaderError:
+            CloudError:
                 When Adafruit IO client is not initiated
             RequestError:
                 When API request fails
@@ -287,4 +287,4 @@ class Uploader:
             return data if raw else data.value
         
         else:
-            raise UploaderError("Adafruit IO client not initiated")
+            raise CloudError("Adafruit IO client not initiated")
