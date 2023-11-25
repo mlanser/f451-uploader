@@ -27,6 +27,7 @@ def main():
         config = {
             "AIO_ID": None,         # Set your 'ADAFRUIT IO USERNAME'
             "AIO_KEY": None,        # set your 'ADAFRUIT IO KEY'
+            "AIO_LOC_ID": None,     # set your 'ADAFRUIT IO Weather Location ID'
         }
 
     # Check for creds
@@ -53,6 +54,42 @@ def main():
     # we print out the whole structure.
     pretty = json.dumps(data._asdict(), indent=4, sort_keys=True)
     print(pretty)
+
+    # Get weather forecast from Adafruit IO as JSON
+    print("\n--------------------------------------------")
+    print("Receiving latest weather data from Adafruit IO")
+    forecast = asyncio.run(iot.aio_receive_weather())
+    print(json.dumps(forecast, indent=4, sort_keys=True))
+
+    # Parse the current forecast
+    # current = forecast['current']
+    # print("Current Forecast")
+    # print(f"It's {current['conditionCode']} and {current['temperature']}C")
+
+    # Parse 2-day forecast
+    # forecast2d = forecast['forecast_days_2']
+    # print("\nWeather in Two Days")
+    # print(f"It'll be {forecast2d['conditionCode']} with a high of {forecast2d['temperatureMin']}C and a low of {forecast2d['temperatureMax']}C.")
+
+    # Parse the five day forecast
+    # forecast5d = forecast['forecast_days_5']
+    # print('\nWeather in Five Days')
+    # print(f"It'll be {forecast5d['conditionCode']} with a high of {forecast5d['temperatureMin']}C and a low of {forecast5d['temperatureMax']}C.")
+
+    # Get random data from Adafruit IO
+    print("\n--------------------------------------------")
+    # someWord = asyncio.run(iot.aio_receive_random_word())
+    # print(f"Receiving random word from Adafruit IO: {someWord}")
+    print("Receiving random word from Adafruit IO")
+    someWord = asyncio.run(iot.aio_receive_random(iot.aioRandWord, True))
+    print(json.dumps(someWord, indent=4, sort_keys=True))
+
+    print("\n--------------------------------------------")
+    # someNumber = asyncio.run(iot.aio_receive_random_number())
+    # print(f"Receiving random number from Adafruit IO: {someNumber}")
+    print("Receiving random number from Adafruit IO")
+    someNumber = asyncio.run(iot.aio_receive_random(iot.aioRandNumber, True))
+    print(json.dumps(someNumber, indent=4, sort_keys=True))
 
     print("=============== [End of Demo] =================\n")
 

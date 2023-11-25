@@ -9,6 +9,12 @@
 AIO_ID = "<ADAFRUIT IO USERNAME>"
 AIO_KEY = "<ADAFRUIT IO KEY>"
 
+AIO_LOC_ID = "<ADAFRUIT IO Weather Location ID>"
+
+AIO_RWRD_ID = "<ADAFRUIT IO Random Word ID>"
+AIO_RNUM_ID = "<ADAFRUIT IO Random Number ID>"
+
+
 # -- Arduino Cloud ----------------------------------------
 ARD_ID = "<ARDUINO CLOUD ID>"
 ARD_KEY = "<ARDUINO CLOUD KEY>"

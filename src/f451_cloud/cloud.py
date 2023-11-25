@@ -15,6 +15,9 @@ Dependencies:
  - frozendict
 """
 
+import json
+import asyncio
+
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
@@ -32,6 +35,9 @@ __all__ = [
     "KWD_AIO_KEY",
     "KWD_ARD_ID",
     "KWD_ARD_KEY",
+    "KWD_AIO_LOC_ID",
+    "KWD_AIO_RWRD_ID",
+    "KWD_AIO_RNUM_ID",
 ]
 
 
@@ -40,6 +46,10 @@ __all__ = [
 # =========================================================
 KWD_AIO_ID = "AIO_ID"
 KWD_AIO_KEY = "AIO_KEY"
+KWD_AIO_LOC_ID = "AIO_LOC_ID"
+KWD_AIO_RWRD_ID = "AIO_RWRD_ID"
+KWD_AIO_RNUM_ID = "AIO_RNUM_ID"
+
 KWD_ARD_ID = "ARD_ID"
 KWD_ARD_KEY = "ARD_KEY"
 
@@ -107,7 +117,11 @@ class Cloud:
 
         self.aio_is_active, self._aioREST, self._aioMQTT = self._init_aio(**settings)
         self.ard_is_active, self._ardREST = self._init_ard(**settings)
-        
+
+        self._aioLocID = settings.get(KWD_AIO_LOC_ID)
+        self._aioRndWrdID = settings.get(KWD_AIO_RWRD_ID)
+        self._aioRndNumID = settings.get(KWD_AIO_RNUM_ID)
+
     def _init_aio(self, **kwargs):
         """Initialize Adafruit IO REST and MQTT clients."""
         flg = False
@@ -136,6 +150,14 @@ class Cloud:
             flg = bool(ard)
 
         return flg, ard
+
+    @property
+    def aioRandWord(self):
+        return self._aioRndWrdID
+
+    @property
+    def aioRandNumber(self):
+        return self._aioRndNumID
 
     def aio_create_feed(self, feedName, strict=False):
         """Create Adafruit IO feed
@@ -269,7 +291,7 @@ class Cloud:
             feedKey:
                 'str' with Adafruit IO feed key
             raw:
-                If 'True' than raw data object (in form 
+                If 'True' then raw data object (in form 
                 of 'namedtuple') is returned    
         Returns:
             Adafruit feed info
@@ -288,3 +310,67 @@ class Cloud:
         
         else:
             raise CloudError("Adafruit IO client not initiated")
+
+    async def aio_receive_weather(self, weatherID=None, raw=False):
+        """Receive weather data from Adafruit IO feed
+
+        Args:
+            weatherID:
+                'int' with Adafruit IO weather ID
+            raw:
+                If 'True' then raw data object (in form 
+                of 'namedtuple') is returned, else data
+                is returned as JSON   
+        Returns:
+            Adafruit weather data
+
+        Raises:
+            CloudError:
+                When Adafruit IO client is not initiated
+            RequestError:
+                When API request fails
+            ThrottlingError:
+                When exceeding Adafruit IO rate limit
+        """
+        if self.aio_is_active:
+            wID = weatherID if weatherID is not None else self._aioLocID
+            data = self._aioREST.receive_weather(wID)
+            return data if raw else json.loads(json.dumps(data))
+        
+        else:
+            raise CloudError("Adafruit IO client not initiated")
+
+    async def aio_receive_random(self, randomID=None, raw=False):
+        """Receive random value from Adafruit IO feed
+
+        Args:
+            randomID:
+                'int' with Adafruit IO random generator ID
+            raw:
+                If 'True' then raw data object (in form 
+                of 'namedtuple') is returned, else data
+                is returned as JSON   
+        Returns:
+            Adafruit random data
+
+        Raises:
+            CloudError:
+                When Adafruit IO client is not initiated
+            RequestError:
+                When API request fails
+            ThrottlingError:
+                When exceeding Adafruit IO rate limit
+        """
+        if self.aio_is_active:
+            data = self._aioREST.receive_random(randomID)
+            return data if raw else data.value
+        
+        else:
+            raise CloudError("Adafruit IO client not initiated")
+
+    # async def aio_receive_random_word(self):
+    #     return asyncio.run(self.aio_receive_random(self._aioRndWrdID))
+
+    # async def aio_receive_random_number(self):
+    #     return asyncio.run(self.aio_receive_random(self._aioRndNumID))
+
