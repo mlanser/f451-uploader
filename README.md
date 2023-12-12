@@ -1,4 +1,4 @@
-# f451 Labs Cloud module v1.1.0
+# f451 Labs Cloud module v1.1.2
 
 ## Overview
 
