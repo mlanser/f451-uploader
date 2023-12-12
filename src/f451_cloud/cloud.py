@@ -29,29 +29,29 @@ from iot_api_client.rest import ApiException as ardAPIError
 from iot_api_client.configuration import Configuration as ardConfig
 
 __all__ = [
-    "Cloud",
-    "CloudError",    
-    "KWD_AIO_ID",
-    "KWD_AIO_KEY",
-    "KWD_ARD_ID",
-    "KWD_ARD_KEY",
-    "KWD_AIO_LOC_ID",
-    "KWD_AIO_RWRD_ID",
-    "KWD_AIO_RNUM_ID",
+    'Cloud',
+    'CloudError',
+    'KWD_AIO_ID',
+    'KWD_AIO_KEY',
+    'KWD_ARD_ID',
+    'KWD_ARD_KEY',
+    'KWD_AIO_LOC_ID',
+    'KWD_AIO_RWRD_ID',
+    'KWD_AIO_RNUM_ID',
 ]
 
 
 # =========================================================
 #    K E Y W O R D S   F O R   C O N F I G   F I L E S
 # =========================================================
-KWD_AIO_ID = "AIO_ID"
-KWD_AIO_KEY = "AIO_KEY"
-KWD_AIO_LOC_ID = "AIO_LOC_ID"
-KWD_AIO_RWRD_ID = "AIO_RWRD_ID"
-KWD_AIO_RNUM_ID = "AIO_RNUM_ID"
+KWD_AIO_ID = 'AIO_ID'
+KWD_AIO_KEY = 'AIO_KEY'
+KWD_AIO_LOC_ID = 'AIO_LOC_ID'
+KWD_AIO_RWRD_ID = 'AIO_RWRD_ID'
+KWD_AIO_RNUM_ID = 'AIO_RNUM_ID'
 
-KWD_ARD_ID = "ARD_ID"
-KWD_ARD_KEY = "ARD_KEY"
+KWD_ARD_ID = 'ARD_ID'
+KWD_ARD_KEY = 'ARD_KEY'
 
 
 # =========================================================
@@ -59,6 +59,7 @@ KWD_ARD_KEY = "ARD_KEY"
 # =========================================================
 class CloudError(Exception):
     """Custom exception class"""
+
     pass
 
 
@@ -72,19 +73,19 @@ class Cloud:
     and makes it easier to upload data to and/or receive data from either
     cloud service.
 
-    NOTE: attributes follow same naming convention as used 
-    in the 'settings.toml' file. This makes it possible to pass 
+    NOTE: attributes follow same naming convention as used
+    in the 'settings.toml' file. This makes it possible to pass
     in the 'config' object (or any other dict) as is.
 
-    NOTE: we let users provide an entire 'dict' object with settings as 
+    NOTE: we let users provide an entire 'dict' object with settings as
     key-value pairs, or as individual settings. User can combine both and,
     for example, provide a standard 'config' object as well as individual
     settings which could override the values in the 'config' object.
 
     Example:
-        myCloud = Cloud(config)           # Use values from 'config' 
+        myCloud = Cloud(config)           # Use values from 'config'
         myCloud = Cloud(key=val)          # Use val
-        myCloud = Cloud(config, key=val)  # Use values from 'config' and also use 'val' 
+        myCloud = Cloud(config, key=val)  # Use values from 'config' and also use 'val'
 
     Attributes:
         AIO_USERNAME:   Adafruit IO username
@@ -100,6 +101,7 @@ class Cloud:
         aio_send_data:      Send data to an existing Adafruit IO feed
         aio_receive_data:   Receive data from an existing Adafruit IO feed
     """
+
     def __init__(self, *args, **kwargs):
         """Initialize Cloud
 
@@ -110,8 +112,8 @@ class Cloud:
                 User can provide individual settings as key-value pairs
         """
 
-        # We combine 'args' and 'kwargs' to allow users to provide the entire 
-        # 'config' object and/or individual settings (which could override 
+        # We combine 'args' and 'kwargs' to allow users to provide the entire
+        # 'config' object and/or individual settings (which could override
         # values in 'config').
         settings = {**args[0], **kwargs} if args and isinstance(args[0], dict) else kwargs
 
@@ -135,7 +137,7 @@ class Cloud:
             aMC = aioMQTT(aioID, aioKey)
             flg = bool(aRC) and bool(aMC)
 
-        return flg, aRC, aMC    
+        return flg, aRC, aMC
 
     def _init_ard(self, **kwargs):
         """Initialize Arduino Cloud client."""
@@ -146,7 +148,7 @@ class Cloud:
         ardKey = kwargs.get(KWD_ARD_KEY)
 
         if ardID and ardKey:
-            ard = None          # TO DO: fix this placeholder
+            ard = None  # TO DO: fix this placeholder
             flg = bool(ard)
 
         return flg, ard
@@ -187,9 +189,9 @@ class Cloud:
                 nameList = [feed.name for feed in feedList]
                 if feedName in nameList:
                     raise CloudError(f"Adafruit IO already has a feed named '{feedName}'")
-                
+
             return self._aioREST.create_feed(feed)
-        
+
         else:
             raise CloudError("Adafruit IO client not initiated")
 
@@ -209,7 +211,7 @@ class Cloud:
         """
         if self.aio_is_active:
             return self._aioREST.feeds()
-        
+
         else:
             raise CloudError("Adafruit IO client not initiated")
 
@@ -232,7 +234,7 @@ class Cloud:
         """
         if self.aio_is_active:
             return self._aioREST.feeds(feedKey)
-        
+
         else:
             raise CloudError("Adafruit IO client not initiated")
 
@@ -280,9 +282,9 @@ class Cloud:
         """
         if self.aio_is_active:
             self._aioREST.send_data(feedKey, dataPt)
-        
+
         else:
-            raise CloudError("Adafruit IO client not initiated")
+            raise CloudError('Adafruit IO client not initiated')
 
     async def aio_receive_data(self, feedKey, raw=False):
         """Receive last data value from Adafruit IO feed
@@ -291,8 +293,8 @@ class Cloud:
             feedKey:
                 'str' with Adafruit IO feed key
             raw:
-                If 'True' then raw data object (in form 
-                of 'namedtuple') is returned    
+                If 'True' then raw data object (in form
+                of 'namedtuple') is returned
         Returns:
             Adafruit feed info
 
@@ -307,7 +309,7 @@ class Cloud:
         if self.aio_is_active:
             data = self._aioREST.receive(feedKey)
             return data if raw else data.value
-        
+
         else:
             raise CloudError("Adafruit IO client not initiated")
 
@@ -318,9 +320,9 @@ class Cloud:
             weatherID:
                 'int' with Adafruit IO weather ID
             raw:
-                If 'True' then raw data object (in form 
+                If 'True' then raw data object (in form
                 of 'namedtuple') is returned, else data
-                is returned as JSON   
+                is returned as JSON
         Returns:
             Adafruit weather data
 
@@ -336,7 +338,7 @@ class Cloud:
             wID = weatherID if weatherID is not None else self._aioLocID
             data = self._aioREST.receive_weather(wID)
             return data if raw else json.loads(json.dumps(data))
-        
+
         else:
             raise CloudError("Adafruit IO client not initiated")
 
@@ -347,9 +349,9 @@ class Cloud:
             randomID:
                 'int' with Adafruit IO random generator ID
             raw:
-                If 'True' then raw data object (in form 
+                If 'True' then raw data object (in form
                 of 'namedtuple') is returned, else data
-                is returned as JSON   
+                is returned as JSON
         Returns:
             Adafruit random data
 
@@ -364,7 +366,7 @@ class Cloud:
         if self.aio_is_active:
             data = self._aioREST.receive_random(randomID)
             return data if raw else data.value
-        
+
         else:
             raise CloudError("Adafruit IO client not initiated")
 
@@ -373,4 +375,3 @@ class Cloud:
 
     # async def aio_receive_random_number(self):
     #     return asyncio.run(self.aio_receive_random(self._aioRndNumID))
-

@@ -21,18 +21,18 @@ except ModuleNotFoundError:
 def main():
     # Initialize TOML parser and try to load 'settings.toml' file
     try:
-        with open(Path(__file__).parent.joinpath("settings.toml"), mode="rb") as fp:
+        with open(Path(__file__).parent.joinpath('settings.toml'), mode='rb') as fp:
             config = tomllib.load(fp)
     except (FileNotFoundError, tomllib.TOMLDecodeError):
         config = {
-            "AIO_ID": None,         # Set your 'ADAFRUIT IO USERNAME'
-            "AIO_KEY": None,        # set your 'ADAFRUIT IO KEY'
-            "AIO_LOC_ID": None,     # set your 'ADAFRUIT IO Weather Location ID'
+            'AIO_ID': None,         # Set your 'ADAFRUIT IO USERNAME'
+            'AIO_KEY': None,        # set your 'ADAFRUIT IO KEY'
+            'AIO_LOC_ID': None,     # set your 'ADAFRUIT IO Weather Location ID'
         }
 
     # Check for creds
-    if not config.get("AIO_ID", None) or not config.get("AIO_KEY", None):
-        sys.exit("ERROR: Missing Adafruit IO credentials")      
+    if not config.get('AIO_ID', None) or not config.get('AIO_KEY', None):
+        sys.exit('ERROR: Missing Adafruit IO credentials')
 
     iot = Cloud(config)
     feedName = 'TEST_FEED_' + str(time.time_ns())
@@ -48,9 +48,9 @@ def main():
     print(f"Receiving latest from Adafruit IO feed: {feed.key}")
     data = asyncio.run(iot.aio_receive_data(feed.key, True))
 
-    # Adafruit IO returns data in form of 'namedtuple' and we can 
+    # Adafruit IO returns data in form of 'namedtuple' and we can
     # use the '_asdict()' method to convert it to regular 'dict'.
-    # We then pass the 'dict' to 'json.dumps()' to prettify before 
+    # We then pass the 'dict' to 'json.dumps()' to prettify before
     # we print out the whole structure.
     pretty = json.dumps(data._asdict(), indent=4, sort_keys=True)
     print(pretty)
@@ -94,5 +94,5 @@ def main():
     print("=============== [End of Demo] =================\n")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

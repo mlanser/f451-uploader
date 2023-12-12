@@ -24,32 +24,33 @@ except ModuleNotFoundError:
 # =========================================================
 #              M I S C .   C O N S T A N T S
 # =========================================================
-KWD_TST_VAL = "TST_VAL"
-DEF_TST_VAL = "test1-2-3"
+KWD_TST_VAL = 'TST_VAL'
+DEF_TST_VAL = 'test1-2-3'
+
 
 # =========================================================
 #          F I X T U R E S   A N D   H E L P E R S
 # =========================================================
 @pytest.fixture
 def valid_str():
-    return "Hello world"
+    return 'Hello world'
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 def config():
-    settings = "src/f451_cloud/settings.toml"
+    settings = 'src/f451_cloud/settings.toml'
     try:
-        with open(Path(__file__).parent.parent.joinpath(settings), mode="rb") as fp:
+        with open(Path(__file__).parent.parent.joinpath(settings), mode='rb') as fp:
             config = tomllib.load(fp)
     except tomllib.TOMLDecodeError:
-        pytest.fail("Invalid 'settings.toml' file")      
+        pytest.fail("Invalid 'settings.toml' file")
     except FileNotFoundError:
-        pytest.fail("Missing 'settings.toml' file")      
+        pytest.fail("Missing 'settings.toml' file")
 
     return config
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 def cloud(config):
     cloud = Cloud(config)
 
@@ -61,10 +62,10 @@ def cloud(config):
 # =========================================================
 def test_dummy(valid_str):
     """Dummy test case.
-    
+
     This is only a placeholder test case.
     """
-    assert valid_str == "Hello world"
+    assert valid_str == 'Hello world'
 
 
 def test_config(config):
