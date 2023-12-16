@@ -20,16 +20,8 @@ This module is dependent on the following libraries:
 
 You can use `pip install` to install this module directly from Github as follows:
 
-Using HTTPS:
-
 ```bash
 $ pip install 'f451-cloud @ git+https://github.com/mlanser/f451-cloud.git'
-```
-
-Using SSH:
-
-```bash
-$ pip install 'f451-cloud @ git+ssh://git@github.com:mlanser/f451-cloud.git'
 ```
 
 ## How to use
