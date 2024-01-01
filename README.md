@@ -1,5 +1,7 @@
 # f451 Labs Cloud module v1.1.2
 
+**NOTE:** THIS MODULE HAS BEEN INCORPORATED INTO [*f451 Labs Common*](https://github.com/mlanser/f451-common) AND THIS REPO WILL SOON BE DELETED.
+
 ## Overview
 
 The *f451 Labs Cloud* module encapsulates the *Adafruit IO* REST and MQTT clients, as well as the *Arduino Cloud* client within a single class. Most *f451 Labs* projects upload to and/or receive data from one or both of these services, and the `Cloud` class simplifies these tasks by standardizing send and receive methods, and so on.
